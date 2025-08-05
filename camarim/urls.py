@@ -8,7 +8,7 @@ from .views import (
     ProdutoListView,ProdutoCreateView,ProdutoUpdateView,ProdutoDeleteView,
     EstoqueListView,EstoqueCreateView,EstoqueUpdateView,EstoqueDeleteView,
     EstoqueSalaListView,EstoqueSalaCreateView,EstoqueSalaUpdateView,EstoqueSalaDeleteView,
-    PropostaListView,PropostaCreateView,PropostaDetailView,PropostaDeleteView,HelpView,RegisterView, CustomLoginView, LogoutGetView
+    PropostaListView,PropostaCreateView,PropostaDetailView,PropostaDeleteView,HelpView,RegisterView, CustomLoginView, LogoutGetView, SalaReplicateView
 )
 from .ai_views import (
     AIAssistantView, enhance_event_form, product_suggestions, 
@@ -58,6 +58,8 @@ urlpatterns = [
     path('painel/eventos/<int:evento_pk>/salas/<int:sala_pk>/estoque/criar/',   EstoqueSalaCreateView.as_view(), name='estoque_sala_create'),
     path('painel/eventos/<int:evento_pk>/salas/<int:sala_pk>/estoque/<int:pk>/editar/',EstoqueSalaUpdateView.as_view(),name='estoque_sala_edit'),
     path('painel/eventos/<int:evento_pk>/salas/<int:sala_pk>/estoque/<int:pk>/excluir/',EstoqueSalaDeleteView.as_view(),name='estoque_sala_delete'),
+    path('painel/eventos/<int:evento_pk>/salas/<int:sala_pk>/replicar/', SalaReplicateView.as_view(), name='sala_replicar'),
+
 
     # propostas
     path('painel/propostas/', PropostaListView.as_view(), name='proposta_list'),

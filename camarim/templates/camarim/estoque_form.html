@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ view.title }} Estoque{% endblock %}
+{% block content %}
+<h1>{{ view.title }} Estoque</h1>
+<form method="post">{% csrf_token %}
+  <div class="mb-3">
+    {{ form.produto.label_tag }}
+    {{ form.produto }}
+    {{ form.produto.errors }}
+  </div>
+  <div class="mb-3">
+    {{ form.quantidade.label_tag }}
+    {{ form.quantidade }}
+    {{ form.quantidade.errors }}
+  </div>
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="{% url 'camarim:estoque_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h1>Sala: {{ sala.nome }}</h1>
+  <p><strong>Evento:</strong> {{ sala.evento.nome }}</p>
+
+  <h3 class="mt-4">Produtos na Sala</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr><th>Produto</th><th>Quantidade</th></tr>
+    </thead>
+    <tbody>
+      {% for item in itens %}
+      <tr>
+        <td>{{ item.produto.nome }}</td>
+        <td>{{ item.quantidade }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="2">Nenhum item cadastrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3 class="mt-4">Adicionar Produto</h3>
+  <form method="post">
+    {% csrf_token %}
+    <div class="row g-2">
+      <div class="col-md-6">{{ form_estoque.produto.label_tag }} {{ form_estoque.produto }}</div>
+      <div class="col-md-3">{{ form_estoque.quantidade.label_tag }} {{ form_estoque.quantidade }}</div>
+      <div class="col-md-3 align-self-end"><button class="btn btn-primary">Adicionar</button></div>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Central de Ajuda</h1>
+  <form method="post">{% csrf_token %}
+    <input type="text" name="query" placeholder="Qual sua dúvida?" value="{{ query|default:'' }}" />
+    <button type="submit">Enviar</button>
+  </form>
+
+  {% if answer %}
+    <h2>Resposta</h2>
+    <div class="help-answer">{{ answer }}</div>
+  {% endif %}
+{% endblock %}

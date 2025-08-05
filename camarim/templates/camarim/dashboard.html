@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - InventarioPro{% endblock %}
+
+{% block content %}
+<!-- Header da página -->
+<div class="page-header">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1><i class='bx bx-home me-2'></i>Dashboard</h1>
+        <p class="mb-0">Visão geral do seu inventário e estatísticas</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{% url 'camarim:evento_create' %}" class="btn btn-light">
+          <i class='bx bx-plus me-1'></i>Novo Evento
+        </a>
+        <a href="{% url 'camarim:produto_create' %}" class="btn btn-light">
+          <i class='bx bx-plus me-1'></i>Novo Produto
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estatísticas principais -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_eventos }}</h3>
+          <p class="stats-label">Eventos</p>
+        </div>
+        <i class='bx bx-calendar-event' style="font-size: 2rem; color: var(--primary-color);"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_produtos }}</h3>
+          <p class="stats-label">Produtos</p>
+        </div>
+        <i class='bx bx-package' style="font-size: 2rem; color: var(--success-color);"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_salas }}</h3>
+          <p class="stats-label">Salas</p>
+        </div>
+        <i class='bx bx-door-open' style="font-size: 2rem; color: var(--warning-color);"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_propostas }}</h3>
+          <p class="stats-label">Propostas</p>
+        </div>
+        <i class='bx bx-file-blank' style="font-size: 2rem; color: var(--secondary-color);"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Valor total das propostas -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body text-center">
+        <h4 class="text-muted mb-2">Valor Total das Propostas</h4>
+        <h2 class="text-success mb-0">{{ valor_total_propostas|floatformat:2 }} BRL</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Conteúdo principal -->
+<div class="row">
+  <!-- Eventos recentes -->
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class='bx bx-calendar-event me-2'></i>
+          Eventos Recentes
+        </h5>
+        <a href="{% url 'camarim:evento_list' %}" class="btn btn-sm btn-outline-primary">
+          Ver todos
+        </a>
+      </div>
+      <div class="card-body">
+        {% if eventos_recentes %}
+          <div class="list-group list-group-flush">
+            {% for evento in eventos_recentes %}
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">{{ evento.nome }}</h6>
+                  <small class="text-muted">
+                    {% if evento.local %}
+                      <i class='bx bx-map me-1'></i>{{ evento.local }}
+                    {% endif %}
+                    {% if evento.data_inicial %}
+                      <i class='bx bx-calendar ms-2 me-1'></i>{{ evento.data_inicial|date:"d/m/Y" }}
+                    {% endif %}
+                  </small>
+                </div>
+                <span class="badge bg-primary">{{ evento.salas.count }} sala{{ evento.salas.count|pluralize }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-3">
+            <i class='bx bx-calendar-x' style="font-size: 2rem; color: var(--secondary-color);"></i>
+            <p class="text-muted mt-2">Nenhum evento encontrado</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Propostas recentes -->
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class='bx bx-file-blank me-2'></i>
+          Propostas Recentes
+        </h5>
+        <a href="{% url 'camarim:proposta_list' %}" class="btn btn-sm btn-outline-primary">
+          Ver todas
+        </a>
+      </div>
+      <div class="card-body">
+        {% if propostas_recentes %}
+          <div class="list-group list-group-flush">
+            {% for proposta in propostas_recentes %}
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Proposta #{{ proposta.id }}</h6>
+                  <small class="text-muted">
+                    <i class='bx bx-calendar-event me-1'></i>{{ proposta.evento.nome }}
+                    <i class='bx bx-calendar ms-2 me-1'></i>{{ proposta.data_criacao|date:"d/m/Y" }}
+                  </small>
+                </div>
+                <span class="badge bg-success">{{ proposta.valor_total }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-3">
+            <i class='bx bx-file-x' style="font-size: 2rem; color: var(--secondary-color);"></i>
+            <p class="text-muted mt-2">Nenhuma proposta encontrada</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Segunda linha de cards -->
+<div class="row">
+  <!-- Produtos com baixo estoque -->
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class='bx bx-error-circle me-2 text-warning'></i>
+          Produtos com Baixo Estoque
+        </h5>
+        <a href="{% url 'camarim:estoque_list' %}" class="btn btn-sm btn-outline-warning">
+          Ver estoque
+        </a>
+      </div>
+      <div class="card-body">
+        {% if produtos_baixo_estoque %}
+          <div class="list-group list-group-flush">
+            {% for produto in produtos_baixo_estoque %}
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">{{ produto.nome }}</h6>
+                  <small class="text-muted">
+                    {% if produto.categoria %}
+                      <i class='bx bx-category me-1'></i>{{ produto.categoria.nome }}
+                    {% endif %}
+                    <i class='bx bx-money ms-2 me-1'></i>{{ produto.preco }}
+                  </small>
+                </div>
+                <span class="badge bg-warning">
+                  {% for estoque in produto.estoques.all %}
+                    {{ estoque.quantidade }}
+                  {% endfor %}
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-3">
+            <i class='bx bx-check-circle' style="font-size: 2rem; color: var(--success-color);"></i>
+            <p class="text-muted mt-2">Todos os produtos têm estoque adequado</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Estatísticas por categoria -->
+  <div class="col-lg-6 mb-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class='bx bx-category me-2'></i>
+          Produtos por Categoria
+        </h5>
+        <a href="{% url 'camarim:produto_list' %}" class="btn btn-sm btn-outline-primary">
+          Ver produtos
+        </a>
+      </div>
+      <div class="card-body">
+        {% if stats_categorias %}
+          <div class="list-group list-group-flush">
+            {% for categoria in stats_categorias %}
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">{{ categoria.nome }}</h6>
+                  <small class="text-muted">Categoria de produtos</small>
+                </div>
+                <span class="badge bg-info">{{ categoria.total_produtos }} produto{{ categoria.total_produtos|pluralize }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-3">
+            <i class='bx bx-category' style="font-size: 2rem; color: var(--secondary-color);"></i>
+            <p class="text-muted mt-2">Nenhuma categoria encontrada</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ações rápidas -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class='bx bx-zap me-2'></i>
+          Ações Rápidas
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <a href="{% url 'camarim:evento_create' %}" class="btn btn-outline-primary w-100">
+              <i class='bx bx-plus me-2'></i>Criar Evento
+            </a>
+          </div>
+          <div class="col-md-3 mb-3">
+            <a href="{% url 'camarim:produto_create' %}" class="btn btn-outline-success w-100">
+              <i class='bx bx-plus me-2'></i>Adicionar Produto
+            </a>
+          </div>
+          <div class="col-md-3 mb-3">
+            <a href="{% url 'camarim:proposta_create' %}" class="btn btn-outline-info w-100">
+              <i class='bx bx-plus me-2'></i>Nova Proposta
+            </a>
+          </div>
+          <div class="col-md-3 mb-3">
+            <a href="{% url 'camarim:estoque_create' %}" class="btn btn-outline-warning w-100">
+              <i class='bx bx-plus me-2'></i>Gerenciar Estoque
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

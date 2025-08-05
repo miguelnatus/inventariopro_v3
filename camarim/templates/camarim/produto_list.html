@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Produtos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1>Produtos</h1>
+  <a href="{% url 'camarim:produto_create' %}" class="btn btn-primary">Novo Produto</a>
+</div>
+<table class="table table-striped">
+  <thead><tr><th>Nome</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Ações</th></tr></thead>
+  <tbody>
+    {% for produto in produtos %}
+      <tr>
+        <td>{{ produto.nome }}</td>
+        <td>{{ produto.categoria.nome }}</td>
+        <td>R$ {{ produto.preco }}</td>
+        <td>{{ produto.quantidade }}</td>
+        <td>
+          <a href="{% url 'camarim:produto_edit' produto.id %}" class="btn btn-sm btn-warning">Editar</a>
+          <a href="{% url 'camarim:produto_delete' produto.id %}" class="btn btn-sm btn-danger">Excluir</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">Nenhum produto cadastrado.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

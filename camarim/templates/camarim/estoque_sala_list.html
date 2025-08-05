@@ -1,0 +1,48 @@
+{# templates/camarim/estoque_sala_list.html #}
+{% extends 'base.html' %}
+
+{% block title %}Estoque da Sala {{ sala.nome }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1>Estoque em {{ sala.nome }} (Evento: {{ evento.nome }})</h1>
+  <a href="{% url 'camarim:estoque_sala_create' evento.id sala.id %}"
+     class="btn btn-primary">
+    <i class="bx bx-plus me-1"></i>Adicionar Produto
+  </a>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Produto</th>
+      <th>Quantidade</th>
+      <th>Observações</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in itens %}
+      <tr>
+        <td>{{ item.produto.nome }}</td>
+        <td>{{ item.quantidade }}</td>
+        <td>{{ item.obs }}</td>
+        <td>
+          <a href="{% url 'camarim:estoque_sala_edit' evento.id sala.id item.id %}"
+             class="btn btn-sm btn-warning">
+            <i class="bx bx-edit-alt"></i>
+          </a>
+          <a href="{% url 'camarim:estoque_sala_delete' evento.id sala.id item.id %}"
+             class="btn btn-sm btn-danger">
+            <i class="bx bx-trash"></i>
+          </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="4">Nenhum item em estoque nesta sala.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ view.title }} Produto{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">{{ view.title }} Produto</h1>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {# Nome #}
+    <div class="mb-3">
+      <label for="{{ form.nome.id_for_label }}" class="form-label">
+        <i class="bx bx-text me-1"></i>{{ form.nome.label }}
+      </label>
+      {{ form.nome }}
+      {% for err in form.nome.errors %}
+        <div class="invalid-feedback d-block">{{ err }}</div>
+      {% endfor %}
+    </div>
+
+    {# Preço #}
+    <div class="mb-3">
+      <label for="{{ form.preco.id_for_label }}" class="form-label">
+        <i class="bx bx-money me-1"></i>{{ form.preco.label }}
+      </label>
+      {{ form.preco }}
+      {% for err in form.preco.errors %}
+        <div class="invalid-feedback d-block">{{ err }}</div>
+      {% endfor %}
+    </div>
+
+    {# Categoria #}
+    <div class="mb-3">
+      <label for="{{ form.categoria.id_for_label }}" class="form-label">
+        <i class="bx bx-category-alt me-1"></i>{{ form.categoria.label }}
+      </label>
+      {{ form.categoria }}
+      {% for err in form.categoria.errors %}
+        <div class="invalid-feedback d-block">{{ err }}</div>
+      {% endfor %}
+    </div>
+
+    {# Quantidade em Estoque #}
+    <div class="mb-3">
+      <label for="{{ form.quantidade.id_for_label }}" class="form-label">
+        <i class="bx bx-box me-1"></i>{{ form.quantidade.label }}
+      </label>
+      {{ form.quantidade }}
+      {% for err in form.quantidade.errors %}
+        <div class="invalid-feedback d-block">{{ err }}</div>
+      {% endfor %}
+    </div>
+
+    {# Descrição #}
+    <div class="mb-3">
+      <label for="{{ form.descricao.id_for_label }}" class="form-label">
+        <i class="bx bx-align-left me-1"></i>{{ form.descricao.label }}
+      </label>
+      {{ form.descricao }}
+      {% for err in form.descricao.errors %}
+        <div class="invalid-feedback d-block">{{ err }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-success me-2">
+        <i class="bx bx-save me-1"></i>Salvar
+      </button>
+      <a href="{% url 'camarim:produto_list' %}" class="btn btn-secondary">
+        <i class="bx bx-x me-1"></i>Cancelar
+      </a>
+    </div>
+  </form>
+{% endblock %}

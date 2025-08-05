@@ -1,0 +1,105 @@
+diff --git a/camarim/utils/chatgpt_service.py b/camarim/utils/chatgpt_service.py
+new file mode 100644
+--- /dev/null
++++ b/camarim/utils/chatgpt_service.py
+@@ -0,0 +1,30 @@
++import os
++import openai
++from django.conf import settings
++
++# Carrega chave da OpenAI de settings ou variável de ambiente
++openai.api_key = getattr(settings, 'OPENAI_API_KEY', os.getenv('OPENAI_API_KEY'))
++
++def send_chat(prompt: str) -> str:
++    """
++    Envia mensagem ao modelo GPT e retorna a resposta.
++    """
++    resp = openai.ChatCompletion.create(
++        model='gpt-4o-mini',
++        messages=[{'role':'user', 'content': prompt}],
++        temperature=0.7,
++        max_tokens=512
++    )
++    return resp.choices[0].message.content.strip()
++
++# Exemplo de uso:
++# reply = send_chat("Olá, ChatGPT!")
++# print(reply)
+diff --git a/camarim/views.py b/camarim/views.py
+index 0000000..1111111 100644
+--- a/camarim/views.py
++++ b/camarim/views.py
+@@ -200,6 +200,43 @@ class EstoqueSalaDeleteView(LoginRequiredMixin, DeleteView):
+         return reverse_lazy('camarim:estoque_sala_list',
+                             args=[self.kwargs['evento_pk'], self.kwargs['sala_pk']])
+
++# Detail e “add product” inline na Sala
++class SalaDetailView(LoginRequiredMixin, View):
++    template_name = 'camarim/sala_detail.html'
++
++    def get(self, request, evento_pk, pk):
++        sala = get_object_or_404(Sala, pk=pk, evento_id=evento_pk)
++        form = EstoqueSalaForm()
++        itens = sala.estoque_salas.all()
++        return render(request, self.template_name, {
++            'sala': sala, 'form_estoque': form, 'itens': itens
++        })
++
++    def post(self, request, evento_pk, pk):
++        sala = get_object_or_404(Sala, pk=pk, evento_id=evento_pk)
++        form = EstoqueSalaForm(request.POST)
++        if form.is_valid():
++            estoque = form.save(commit=False)
++            estoque.sala = sala
++            estoque.save()
++        return self.get(request, evento_pk, pk)
++
+diff --git a/camarim/urls.py b/camarim/urls.py
+index 0000000..2222222 100644
+--- a/camarim/urls.py
++++ b/camarim/urls.py
+@@ -40,6 +40,8 @@ urlpatterns = [
+     path('painel/eventos/<int:evento_pk>/salas/criar/', SalaCreateView.as_view(), name='sala_create'),
+     path('painel/eventos/<int:evento_pk>/salas/<int:pk>/editar/', SalaUpdateView.as_view(), name='sala_update'),
+     path('painel/eventos/<int:evento_pk>/salas/<int:pk>/excluir/', SalaDeleteView.as_view(), name='sala_delete'),
++    path('painel/eventos/<int:evento_pk>/salas/<int:pk>/', SalaDetailView.as_view(), name='sala_detail'),
++
+diff --git a/templates/camarim/sala_detail.html b/templates/camarim/sala_detail.html
+new file mode 100644
+--- /dev/null
++++ b/templates/camarim/sala_detail.html
+@@ -0,0 +1,35 @@
++{% extends 'base.html' %}
++{% block content %}
++<div class="container mt-4">
++  <h1>Sala: {{ sala.nome }}</h1>
++  <p><strong>Evento:</strong> {{ sala.evento.nome }}</p>
++
++  <h3 class="mt-4">Produtos na Sala</h3>
++  <table class="table table-striped">
++    <thead>
++      <tr><th>Produto</th><th>Quantidade</th></tr>
++    </thead>
++    <tbody>
++      {% for item in itens %}
++      <tr>
++        <td>{{ item.produto.nome }}</td>
++        <td>{{ item.quantidade }}</td>
++      </tr>
++      {% empty %}
++      <tr><td colspan="2">Nenhum item cadastrado.</td></tr>
++      {% endfor %}
++    </tbody>
++  </table>
++
++  <h3 class="mt-4">Adicionar Produto</h3>
++  <form method="post">
++    {% csrf_token %}
++    <div class="row g-2">
++      <div class="col-md-6">{{ form_estoque.produto.label_tag }} {{ form_estoque.produto }}</div>
++      <div class="col-md-3">{{ form_estoque.quantidade.label_tag }} {{ form_estoque.quantidade }}</div>
++      <div class="col-md-3 align-self-end"><button class="btn btn-primary">Adicionar</button></div>
++    </div>
++  </form>
++</div>
++{% endblock %}

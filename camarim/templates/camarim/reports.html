@@ -1,0 +1,512 @@
+{% extends 'base.html' %}
+{% block title %}Relatórios Inteligentes - InventarioPro{% endblock %}
+
+{% block content %}
+<!-- Header da página -->
+<div class="page-header">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h1><i class='bx bx-bar-chart-alt-2 me-2'></i>Relatórios Inteligentes</h1>
+        <p class="mb-0">Análises e insights gerados por IA sobre seu inventário</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary" onclick="exportReport()">
+          <i class='bx bx-download me-1'></i>Exportar
+        </button>
+        <button class="btn btn-primary" onclick="generateCustomReport()">
+          <i class='bx bx-brain me-1'></i>Relatório Personalizado
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estatísticas rápidas -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_eventos }}</h3>
+          <p class="stats-label">Eventos</p>
+        </div>
+        <i class='bx bx-calendar-event' style="font-size: 2rem; color: var(--primary-color);"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_produtos }}</h3>
+          <p class="stats-label">Produtos</p>
+        </div>
+        <i class='bx bx-package' style="font-size: 2rem; color: var(--success-color);"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ total_propostas }}</h3>
+          <p class="stats-label">Propostas</p>
+        </div>
+        <i class='bx bx-file-blank' style="font-size: 2rem; color: var(--warning-color);"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stats-card">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="stats-number">{{ valor_total_propostas|floatformat:0 }}</h3>
+          <p class="stats-label">Valor Total (BRL)</p>
+        </div>
+        <i class='bx bx-money' style="font-size: 2rem; color: var(--secondary-color);"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tipos de relatórios -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class='bx bx-brain me-2'></i>
+          Relatórios Disponíveis
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <div class="report-card" onclick="generateReport('eventos')">
+              <div class="report-icon">
+                <i class='bx bx-calendar-event'></i>
+              </div>
+              <div class="report-content">
+                <h6>Relatório de Eventos</h6>
+                <p class="text-muted">Análise de eventos, datas e tendências</p>
+              </div>
+              <div class="report-action">
+                <i class='bx bx-chevron-right'></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="report-card" onclick="generateReport('produtos')">
+              <div class="report-icon">
+                <i class='bx bx-package'></i>
+              </div>
+              <div class="report-content">
+                <h6>Relatório de Produtos</h6>
+                <p class="text-muted">Análise de produtos, categorias e preços</p>
+              </div>
+              <div class="report-action">
+                <i class='bx bx-chevron-right'></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="report-card" onclick="generateReport('estoque')">
+              <div class="report-icon">
+                <i class='bx bx-box'></i>
+              </div>
+              <div class="report-content">
+                <h6>Relatório de Estoque</h6>
+                <p class="text-muted">Análise de estoque e alertas</p>
+              </div>
+              <div class="report-action">
+                <i class='bx bx-chevron-right'></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="report-card" onclick="generateReport('propostas')">
+              <div class="report-icon">
+                <i class='bx bx-file-blank'></i>
+              </div>
+              <div class="report-content">
+                <h6>Relatório de Propostas</h6>
+                <p class="text-muted">Análise de propostas e vendas</p>
+              </div>
+              <div class="report-action">
+                <i class='bx bx-chevron-right'></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="report-card" onclick="generateReport('financeiro')">
+              <div class="report-icon">
+                <i class='bx bx-money'></i>
+              </div>
+              <div class="report-content">
+                <h6>Relatório Financeiro</h6>
+                <p class="text-muted">Análise financeira e faturamento</p>
+              </div>
+              <div class="report-action">
+                <i class='bx bx-chevron-right'></i>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <div class="report-card" onclick="generateReport('geral')">
+              <div class="report-icon">
+                <i class='bx bx-bar-chart-alt-2'></i>
+              </div>
+              <div class="report-content">
+                <h6>Relatório Geral</h6>
+                <p class="text-muted">Visão geral de todo o sistema</p>
+              </div>
+              <div class="report-action">
+                <i class='bx bx-chevron-right'></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Área de resultados -->
+<div id="report-results" style="display: none;">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0" id="report-title">
+        <i class='bx bx-bar-chart-alt-2 me-2'></i>
+        Resultado do Relatório
+      </h5>
+      <button class="btn btn-sm btn-outline-secondary" onclick="hideReportResults()">
+        <i class='bx bx-x'></i>
+      </button>
+    </div>
+    <div class="card-body">
+      <!-- Insights da IA -->
+      <div id="ai-insights" class="mb-4">
+        <div class="alert alert-info">
+          <h6><i class='bx bx-brain me-2'></i>Insights da IA</h6>
+          <div id="ai-summary">Carregando análise...</div>
+        </div>
+      </div>
+      
+      <!-- Dados do relatório -->
+      <div id="report-data">
+        <div class="row" id="report-charts">
+          <!-- Gráficos serão inseridos aqui -->
+        </div>
+        
+        <div class="table-responsive mt-4">
+          <table class="table table-striped" id="report-table">
+            <thead>
+              <tr id="table-headers">
+                <!-- Headers serão inseridos dinamicamente -->
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <!-- Dados serão inseridos dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Ações -->
+      <div class="mt-4 text-end">
+        <button class="btn btn-outline-primary me-2" onclick="exportCurrentReport()">
+          <i class='bx bx-download me-1'></i>Exportar
+        </button>
+        <button class="btn btn-primary" onclick="generateActionPlan()">
+          <i class='bx bx-brain me-1'></i>Gerar Plano de Ação
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Gerador de texto automático -->
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class='bx bx-edit me-2'></i>
+          Gerador de Texto Automático
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label">Contexto/Situação:</label>
+            <textarea class="form-control" id="text-context" rows="4" 
+                      placeholder="Descreva a situação para a qual precisa de um texto (ex: evento cancelado, produto em falta, etc.)"></textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Tipo de Texto:</label>
+            <select class="form-select mb-3" id="text-type">
+              <option value="email">Email</option>
+              <option value="notificacao">Notificação</option>
+              <option value="instrucao">Instrução</option>
+              <option value="comunicado">Comunicado</option>
+              <option value="relatorio">Relatório</option>
+            </select>
+            <button class="btn btn-primary w-100" onclick="generateAutomationText()">
+              <i class='bx bx-brain me-1'></i>Gerar Texto
+            </button>
+          </div>
+        </div>
+        
+        <div id="generated-text-result" class="mt-4" style="display: none;">
+          <label class="form-label fw-bold">Texto Gerado:</label>
+          <div class="border p-3 bg-light" id="generated-text-content"></div>
+          <div class="mt-2">
+            <button class="btn btn-sm btn-outline-primary" onclick="copyGeneratedText()">
+              <i class='bx bx-copy me-1'></i>Copiar
+            </button>
+            <button class="btn btn-sm btn-outline-success" onclick="regenerateText()">
+              <i class='bx bx-refresh me-1'></i>Regenerar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentReportData = null;
+
+async function generateReport(type) {
+    showLoading(`Gerando relatório de ${type}...`);
+    
+    try {
+        const response = await fetch('{% url "camarim:reports" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ type: type })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            currentReportData = result;
+            showReportResults(result);
+        } else {
+            alert('Erro ao gerar relatório: ' + result.error);
+        }
+    } catch (error) {
+        alert('Erro de conexão: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+function showReportResults(result) {
+    document.getElementById('report-results').style.display = 'block';
+    document.getElementById('report-title').innerHTML = 
+        `<i class='bx bx-bar-chart-alt-2 me-2'></i>Relatório de ${result.type.charAt(0).toUpperCase() + result.type.slice(1)}`;
+    
+    // Mostrar insights da IA
+    document.getElementById('ai-summary').innerHTML = result.summary;
+    
+    // Mostrar dados em formato de cards
+    const chartsDiv = document.getElementById('report-charts');
+    chartsDiv.innerHTML = '';
+    
+    for (const [key, value] of Object.entries(result.data)) {
+        if (typeof value === 'number') {
+            chartsDiv.innerHTML += `
+                <div class="col-md-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4 class="text-primary">${value.toLocaleString()}</h4>
+                            <p class="mb-0">${key.replace(/_/g, ' ').toUpperCase()}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Scroll para os resultados
+    document.getElementById('report-results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function hideReportResults() {
+    document.getElementById('report-results').style.display = 'none';
+}
+
+async function generateAutomationText() {
+    const context = document.getElementById('text-context').value.trim();
+    const textType = document.getElementById('text-type').value;
+    
+    if (!context) {
+        alert('Por favor, descreva o contexto/situação.');
+        return;
+    }
+    
+    showLoading('Gerando texto...');
+    
+    try {
+        const response = await fetch('{% url "camarim:generate_automation_text" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({
+                context: context,
+                text_type: textType
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('generated-text-content').innerHTML = result.text.replace(/\n/g, '<br>');
+            document.getElementById('generated-text-result').style.display = 'block';
+        } else {
+            alert('Erro ao gerar texto: ' + result.error);
+        }
+    } catch (error) {
+        alert('Erro de conexão: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+function copyGeneratedText() {
+    const textContent = document.getElementById('generated-text-content').innerText;
+    navigator.clipboard.writeText(textContent).then(() => {
+        showNotification('Texto copiado para a área de transferência!', 'success');
+    });
+}
+
+function regenerateText() {
+    generateAutomationText();
+}
+
+function generateActionPlan() {
+    if (!currentReportData) {
+        alert('Gere um relatório primeiro.');
+        return;
+    }
+    
+    const context = `Baseado nos dados do relatório de ${currentReportData.type}: ${JSON.stringify(currentReportData.data)}`;
+    
+    document.getElementById('text-context').value = context;
+    document.getElementById('text-type').value = 'relatorio';
+    
+    generateAutomationText();
+}
+
+function exportReport() {
+    alert('Funcionalidade de exportação será implementada em breve.');
+}
+
+function exportCurrentReport() {
+    if (!currentReportData) {
+        alert('Gere um relatório primeiro.');
+        return;
+    }
+    
+    const dataStr = JSON.stringify(currentReportData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `relatorio_${currentReportData.type}_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+}
+
+function generateCustomReport() {
+    alert('Relatório personalizado será implementado em breve.');
+}
+
+function showLoading(message) {
+    // Implementar loading spinner
+    console.log('Loading:', message);
+}
+
+function hideLoading() {
+    // Remover loading spinner
+    console.log('Loading finished');
+}
+
+function getCSRFToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+}
+
+function showNotification(message, type = 'info') {
+    // Usar a função do ai-assistant.js
+    if (window.aiAssistant) {
+        window.aiAssistant.showNotification(message, type);
+    } else {
+        alert(message);
+    }
+}
+</script>
+
+<style>
+.report-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 100%;
+}
+
+.report-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.report-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    min-width: 50px;
+}
+
+.report-content {
+    flex: 1;
+}
+
+.report-content h6 {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.report-content p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.report-action {
+    font-size: 1.5rem;
+    color: #ccc;
+}
+
+.report-card:hover .report-action {
+    color: var(--primary-color);
+}
+</style>
+{% endblock %}
+

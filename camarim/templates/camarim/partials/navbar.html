@@ -1,0 +1,29 @@
+<nav class="navbar navbar-custom navbar-expand-lg sticky-top">
+  <div class="container-fluid">
+    <!-- … sua marca e toggler … -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+             role="button" data-bs-toggle="dropdown">
+            <i class='bx bx-user-circle me-1'></i>
+            {{ user.username|default:"Usuário" }}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#"><i class='bx bx-user me-2'></i>Perfil</a></li>
+            <li><a class="dropdown-item" href="#"><i class='bx bx-cog me-2'></i>Configurações</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="post" action="{% url 'camarim:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item d-flex align-items-center p-0">
+                  <i class='bx bx-log-out me-2'></i>Sair
+                </button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ view.title }} Sala{% endblock %}
+{% block content %}
+<h1>{{ view.title }} Sala (Evento: {{ evento.nome }})</h1>
+<form method="post">{% csrf_token %}
+  <div class="mb-3">
+    {{ form.nome.label_tag }}
+    {{ form.nome }}
+    {{ form.nome.errors }}
+  </div>
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="{% url 'camarim:sala_list' evento.id %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

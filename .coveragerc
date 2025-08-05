@@ -1,0 +1,10 @@
+[run]
+# omita todos os módulos que você NÃO vai testar
+omit =
+    camarim/ai_views.py
+    camarim/reports_views.py
+    camarim/knowledge_base.py
+    camarim/sala_detail_snippet.py
+    camarim/urls_snippet.py
+    camarim/utils.py
+    camarim/views.py

@@ -1,0 +1,90 @@
+<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+  <div class="position-sticky pt-3">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'camarim:dashboard' %}">
+          <i class='bx bx-home'></i>
+          Dashboard
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'camarim:evento_list' %}">
+          <i class='bx bx-calendar-event'></i>
+          Eventos
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'camarim:produto_list' %}">
+          <i class='bx bx-package'></i>
+          Produtos
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'camarim:estoque_list' %}">
+          <i class='bx bx-box'></i>
+          Estoque Geral
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'camarim:proposta_list' %}">
+          <i class='bx bx-file-blank'></i>
+          Propostas
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'camarim:reports' %}">
+          <i class='bx bx-bar-chart-alt-2'></i>
+          Relatórios IA
+        </a>
+      </li>
+      
+      <!-- Divider -->
+      <li class="nav-item">
+        <hr class="my-3 mx-3" style="border-color: var(--border-color);">
+      </li>
+      
+      <!-- Submenu Eventos e Salas -->
+      <li class="nav-item">
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+          <span>Gestão por Evento</span>
+        </h6>
+      </li>
+      
+      {% comment %}
+      <!-- Este bloco será implementado quando tivermos o context processor -->
+      {% for evento in eventos_recentes %}
+        <li class="nav-item">
+          <a class="nav-link ps-4" href="{% url 'camarim:sala_list' evento.id %}">
+            <i class='bx bx-door-open'></i>
+            {{ evento.nome|truncatechars:20 }}
+          </a>
+        </li>
+      {% endfor %}
+      {% endcomment %}
+      
+      <!-- Links de configuração -->
+      <li class="nav-item mt-auto">
+        <hr class="my-3 mx-3" style="border-color: var(--border-color);">
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class='bx bx-cog'></i>
+          Configurações
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class='bx bx-help-circle'></i>
+          Ajuda
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

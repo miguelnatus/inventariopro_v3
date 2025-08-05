@@ -18,6 +18,18 @@ class SalaForm(forms.ModelForm):
         fields= ['nome']
         widgets={'nome': forms.TextInput(attrs={'class':'form-control'})}
 
+class SalaReplicateForm(forms.Form):
+    destino = forms.ModelChoiceField(
+        queryset=Evento.objects.none(),      # vamos atribuir dinamicamente
+        label="Evento de destino",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    def __init__(self, *args, eventos_origem=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if eventos_origem is not None:
+            # só mostramos eventos diferentes do origem
+            self.fields['destino'].queryset = Evento.objects.exclude(pk=eventos_origem)
+
 
 class ProdutoForm(forms.ModelForm):
     quantidade = forms.IntegerField(

@@ -3,18 +3,34 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from .views import (
     HomeRedirectView, DashboardView,
-    EventoListView,EventoCreateView,EventoUpdateView,EventoDeleteView,
-    SalaListView,SalaCreateView,SalaUpdateView,SalaDeleteView,
-    ProdutoListView,ProdutoCreateView,ProdutoUpdateView,ProdutoDeleteView,
+
     EstoqueListView,EstoqueCreateView,EstoqueUpdateView,EstoqueDeleteView,
     EstoqueSalaListView,EstoqueSalaCreateView,EstoqueSalaUpdateView,EstoqueSalaDeleteView,
-    PropostaListView,PropostaCreateView,PropostaDetailView,PropostaDeleteView,HelpView,RegisterView, CustomLoginView, LogoutGetView, SalaReplicateView
+    RegisterView, CustomLoginView, LogoutGetView
 )
-from .ai_views import (
-    AIAssistantView, enhance_event_form, product_suggestions, 
-    chat_faq, get_context_help
+
+from .all_views.produtoView import (
+    ProdutoListView, ProdutoCreateView, ProdutoUpdateView, ProdutoDeleteView
 )
-from .reports_views import ReportsView, generate_automation_text, export_report
+
+from .all_views.eventoView import (
+    EventoListView, EventoCreateView, EventoUpdateView, EventoDeleteView   
+)
+
+from .all_views.salasView import (
+    SalaListView, SalaCreateView, SalaUpdateView, SalaDeleteView, SalaReplicateView
+)
+
+from .all_views.propostaView import (
+    PropostaListView, PropostaCreateView, PropostaDetailView, PropostaDeleteView, PropostaUpdateView, DescritivoView
+)
+
+# from .ai_views import (
+#     AIAssistantView, enhance_event_form, product_suggestions, 
+#     chat_faq, get_context_help
+# )
+# from .reports_views import ReportsView, generate_automation_text, export_report
+# from .reports_views import ReportsView
 
 
 app_name = 'camarim'
@@ -46,6 +62,7 @@ urlpatterns = [
     path('painel/produtos/criar/', ProdutoCreateView.as_view(), name='produto_create'),
     path('painel/produtos/<int:pk>/editar/', ProdutoUpdateView.as_view(), name='produto_edit'),
     path('painel/produtos/<int:pk>/excluir/',ProdutoDeleteView.as_view(),name='produto_delete'),
+    # path('painel/produtos/<int:pk>/', ProdutoDetailView.as_view(), name='produto_detail'),
 
     # estoque geral
     path('painel/estoque/',      EstoqueListView.as_view(),    name='estoque_list'),
@@ -68,17 +85,23 @@ urlpatterns = [
     path('painel/propostas/<int:pk>/deletar/', PropostaDeleteView.as_view(), name='proposta_delete'),
     
     # AI Assistant endpoints
-    path('api/ai/', AIAssistantView.as_view(), name='ai_assistant'),
-    path('api/ai/enhance-event/', enhance_event_form, name='enhance_event'),
-    path('api/ai/suggest-products/', product_suggestions, name='suggest_products'),
-    path('api/ai/chat-faq/', chat_faq, name='chat_faq'),
-    path('api/ai/context-help/', get_context_help, name='context_help'),
+    # path('api/ai/', AIAssistantView.as_view(), name='ai_assistant'),
+    # path('api/ai/enhance-event/', enhance_event_form, name='enhance_event'),
+    # path('api/ai/suggest-products/', product_suggestions, name='suggest_products'),
+    # path('api/ai/chat-faq/', chat_faq, name='chat_faq'),
+    # path('api/ai/context-help/', get_context_help, name='context_help'),
     
     # Reports endpoints
-    path('painel/relatorios/', ReportsView.as_view(), name='reports'),
-    path('api/reports/automation-text/', generate_automation_text, name='generate_automation_text'),
-    path('api/reports/export/', export_report, name='export_report'),
+    # path('painel/relatorios/', ReportsView.as_view(), name='reports'),
+    # path('api/reports/automation-text/', generate_automation_text, name='generate_automation_text'),
+    # path('api/reports/export/', export_report, name='export_report'),
+
+    path('propostas/<int:pk>/', PropostaUpdateView.as_view(), name='proposta_detail'),
+    path('propostas/<int:pk>/descritivo/', DescritivoView.as_view(), name='proposta_descritivo'),
 
         # rota da Central de Ajuda
-    path('ajuda/', HelpView.as_view(), name='help'),
+    # path('ajuda/', HelpView.as_view(), name='help'),
+
+    # path('chat/', ChatAPIView.as_view(), name='chat_api'),
+    
 ]

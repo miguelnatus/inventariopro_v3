@@ -1,7 +1,7 @@
 from django import forms
-from django.forms import DateInput
+from django.forms import DateInput, inlineformset_factory
 from djmoney.forms.widgets import MoneyWidget
-from .models import Evento, Sala, Produto, Estoque, EstoqueSala, Proposta
+from .models import Evento, Sala, Produto, Estoque, EstoqueSala, Proposta, ItemProposta
 
 class EventoForm(forms.ModelForm):
     class Meta:
@@ -86,5 +86,10 @@ class EstoqueSalaForm(forms.ModelForm):
 class PropostaForm(forms.ModelForm):
     class Meta:
         model = Proposta
-        fields= ['evento','valor_total','descricao']
-        widgets={'valor_total': forms.NumberInput(attrs={'class':'form-control'})}
+        fields = ['impostos']
+
+ItemPropostaFormSet = inlineformset_factory(
+    Proposta, ItemProposta,
+    fields=('sala','produto','quantidade','preco_unitario'),
+    extra=0, can_delete=False
+)

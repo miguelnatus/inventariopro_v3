@@ -1,0 +1,115 @@
+Autenticação e Autorização
+
+Login (CustomLoginView)
+
+Logout (LogoutGetView)
+
+Cadastro de usuário (RegisterView)
+
+Proteção de todas as áreas com LoginRequiredMixin
+
+Dashboard
+
+Visão geral com estatísticas: total de eventos, produtos, salas, propostas, categorias
+
+Listagem dos itens “recentes” (últimos eventos, últimas propostas)
+
+Alertas de baixo estoque (produtos com quantidade < 10)
+
+Valor total de propostas e ranking de categorias por número de produtos
+
+Eventos
+
+CRUD completo (List, Create, Update, Delete)
+
+Campos: nome, local, descrição, imagem, datas inicial/final
+
+Status de “ativo”/“arquivado”
+
+Upload de imagem e validação de formulário com Bootstrap
+
+Salas
+
+Cada evento pode ter várias salas
+
+CRUD completo para salas dentro de um evento
+
+Replicação: clonar uma sala de um evento para outro, trazendo também o estoque associado e debitando do estoque geral
+
+Produtos
+
+CRUD completo de produtos
+
+Campos: nome, categoria, preço (MoneyField BRL), imagem, descrição
+
+Listagem com coluna de estoque atual
+
+Formulário estilizado com Bootstrap
+
+Estoque Geral
+
+CRUD de registros de estoque por produto
+
+Usa BigIntegerField para suportar grandes quantidades
+
+Exibição na listagem de produtos e alertas de nível baixo
+
+Estoque por Sala
+
+Para cada sala, gerencia quais produtos estão alocados e em que quantidade
+
+Formulários para adicionar/editar/excluir itens de estoque de sala
+
+Validações: não criar duplicata (unique_together), permitir quantidade negativa se necessário
+
+Propostas
+
+CRUD básico de propostas ligadas a eventos
+
+Geração de data de criação automática e cálculo de valor total
+
+Assistente de IA
+
+Endpoints REST em /api/ai/… para:
+
+Melhoria de formulário de evento (enhance-event)
+
+Sugestão de produtos (suggest-products)
+
+Chat FAQ sobre o sistema (chat-faq)
+
+Contextual help na interface (context-help)
+
+Relatórios
+
+Página de relatórios customizados (ReportsView)
+
+Geração de texto automático para relatórios
+
+Exportação de dados (CSV, PDF, etc.)
+
+Importação de dados legados
+
+Conexão com banco “legacy” (DATABASES['legacy'])
+
+Dump/loaddata para trazer categorias, produtos e usuários antigos
+
+Comando custom import_stock para migrar estoque e ajustar quantidades
+
+Front-end e UI
+
+Templates baseados em Bootstrap 5 e BoxIcons
+
+Barra de navegação, sidebar e mensagens flash
+
+Validações de formulário com feedback inline
+
+Scripts de auxiliar (ex.: realce de campos, chamada ao assistente de IA)
+
+Infraestrutura de testes
+
+Cobertura mínima de 90% para o app camarim
+
+Testes de modelos, views genéricas, formulários e cliente OpenAI
+
+Reuso de banco --reuse-db para acelerar o CI local  essas são as funcionalidades do sistema

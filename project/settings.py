@@ -6,13 +6,13 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+SECRET_KEY = 'django-insecure-d5@gpfwb4%k@7b35+gz)rmxc6q4pytwey%p+#fiphvt$+3^jc9'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d5@gpfwb4%k@7b35+gz)rmxc6q4pytwey%p+#fiphvt$+3^jc9'
-
+# SECRET_KEY = 'django-insecure-d5@gpfwb4%k@7b35+gz)rmxc6q4pytwey%p+#fiphvt$+3^jc9'
+# OPENROUTER_API_KEY= os.getenv('OPENROUTER_API_KEY', 'your_openrouter_api_key_here') 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

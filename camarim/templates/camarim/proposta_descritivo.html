@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Evento: {{ proposta.evento.nome }}</h1>
+{% for sala, itens in salas.items %}
+  <h3>Sala: {{ sala.nome }}</h3>
+  <table class="table">
+    <thead><tr><th>Item</th><th>Quantidade</th></tr></thead>
+    <tbody>
+      {% for it in itens %}
+      <tr>
+        <td>{{ it.produto.nome }}</td>
+        <td>{{ it.quantidade }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+<a href="{% url 'proposta_detail' proposta.pk %}" class="btn btn-link">Voltar</a>
+<button onclick="window.print()" class="btn btn-primary">Imprimir Descritivo</button>
+{% endblock %}

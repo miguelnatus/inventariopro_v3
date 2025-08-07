@@ -1,6 +1,8 @@
 from django.db import models, transaction
 from djmoney.models.fields import MoneyField
 from django.utils import timezone
+from decimal import Decimal
+from django.db.models import Sum
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -93,16 +95,38 @@ class EstoqueSala(models.Model):
 
     def __str__(self):
         return f"{self.sala.nome}—{self.produto.nome}: {self.quantidade}"
-
+    
 class Proposta(models.Model):
-    evento       = models.ForeignKey(
-        Evento,
-        on_delete=models.CASCADE,
-        related_name='propostas'
-    )
-    data_criacao = models.DateTimeField(auto_now_add=True)
-    valor_total  = MoneyField(max_digits=14, decimal_places=2, default_currency='BRL')
-    descricao    = models.TextField(blank=True)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name='propostas')
+    created_at = models.DateTimeField(auto_now_add=True)
+    impostos = models.DecimalField('Impostos (%)', max_digits=5, decimal_places=2, default=0)
 
-    def __str__(self):
-        return f"#{self.id} → {self.evento.nome} = R$ {self.valor_total}"
+    @property
+    def subtotal(self):
+        return sum(item.total for item in self.itens.all())
+
+    @property
+    def total_impostos(self):
+        return (self.subtotal * self.impostos / Decimal(100)).quantize(Decimal('0.01'))
+
+    @property
+    def total(self):
+        return (self.subtotal + self.total_impostos).quantize(Decimal('0.01'))
+
+
+class ItemProposta(models.Model):
+    proposta = models.ForeignKey(Proposta, on_delete=models.CASCADE, related_name='itens')
+    sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.PROTECT)
+    quantidade = models.PositiveIntegerField(default=1)
+    preco_unitario = models.DecimalField('Preço Unitário', max_digits=10, decimal_places=2)
+
+    @property
+    def total(self):
+        return (self.preco_unitario * self.quantidade).quantize(Decimal('0.01'))
+
+    def save(self, *args, **kwargs):
+        # na criação, carrega preço padrão do produto
+        if not self.pk and (self.preco_unitario is None or self.preco_unitario == 0):
+            self.preco_unitario = self.produto.preco
+        super().save(*args, **kwargs)
